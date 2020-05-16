@@ -1,0 +1,11 @@
+{
+  "preset": "@shelf/jest-mongodb",
+  "roots": ["."],
+  "modulePaths": ["."],
+  "moduleDirectories": ["./node_modules", "./src"],
+  "moduleFileExtensions": ["ts", "js", "json"],
+  "transform": { "^.+\\.ts$": "ts-jest" },
+  "testEnvironment": "node",
+  "testMatch": ["**/?(*.)+(unit|int|spec).[jt]s"],
+  "testPathIgnorePatterns": ["/node_modules/", "/dist/"]
+}

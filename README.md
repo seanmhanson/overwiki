@@ -1,32 +1,75 @@
 # Overwiki
+
 A minimal, streamlined Wikipedia-like web application.
 
 ## Developer Setup
-1. Install Node >= v12.13.0:
-   - via [homebrew](https://brew.sh/) with the command `brew install node`
-    - via the [nodejs installer](https://nodejs.org/en/)
-2. Install NPM >= 6.12.0 (included with Node)
-3. Install server dependencies:
+
+### 1. Install Node and NPM
+
+Overwiki requires Node >= 12.13.0 and NPM >= 6.12.0. To install, see the official [downloads and documentation](https://nodejs.org/en/).
+
+### 2. Install MongoDB
+
+Overwiki requires MongoDB Community Edition >= 4.2.0.
+
+#### Installing with Homebrew
+
+_Recommended for users who do not need to manage multiple instances of MongoDB_
+
+To install using [Homebrew](https://brew.sh/):
+
 ```
-cd server
-npm install
+brew tap mongodb/brew
+brew install mongodb-community@4.2
+```
+
+This will automatically create a configuration file and corresponding log and data directories managed by Homebrew (see [the official docs](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/#procedure) for more detail).
+
+#### Installing using M Version Manager
+
+To install using the third-party [m version manager](https://github.com/aheckmann/m):
+
+```
+npm install -global m
+m 4.2
+```
+
+Then create the default directories expected by MongoDB:
+
+```
+sudo mkdir /data/db
+sudo mkdir /data/log
+```
+
+Alternatively, you can create a MongoDB [configuration file](https://docs.mongodb.com/manual/reference/configuration-options/) and manage your own data and log paths.
+
+### 3. Install Dependencies
+
+```
+cd server && npm install
+cd client && npm install
 ```
 
 ## Common Tasks
-### Start the server
+
+### Start MongoDB
+
+#### Using Homebrew (as a macOS service)
+
 ```
-cd server
-npm run
+brew services start mongodb-community@4.2
 ```
 
-### Lint all server files
-(this will be included as a commit hook)
+#### From the Terminal (as a process)
+
+Start the `mongod` process, optionally providing a path for logging (the default behavior will log to standard output), and providing the port `27030`:
+
 ```
-npm run lint
+mongod --logpath /data/log --port 27030
 ```
 
-### Format all server files
-(this will be included as a commit hook)
+Alternatively, provide the path to a configuration file:
+
 ```
-npm run format
+mongod --config <filename>
 ```

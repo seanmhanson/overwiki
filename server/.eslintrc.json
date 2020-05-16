@@ -1,36 +1,48 @@
 {
-  "root": true,
   "env": {
-      "browser": true,
-      "commonjs": true,
-      "es6": true,
-      "jest": true
+    "es6": true,
+    "jest": true
   },
-  "extends": [    
-    "eslint:recommended",    
+  "extends": [
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "plugin:jest/style",
     "plugin:node/recommended",
     "airbnb-base",
     "prettier"
   ],
   "globals": {
-      "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly"
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
   },
   "parser": "@typescript-eslint/parser",
-  "plugins": [
-    "@typescript-eslint"
-  ],
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
+  "plugins": ["import", "@typescript-eslint", "jest"],
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "directory": "./tsconfig.json",
+        "alwaysTryTypes": true
+      }
+    }
+  },
   "rules": {
-    "@typescript-eslint/no-explicit-any": 1,
+    // namespaced rules
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-use-before-define": 0,
+    "@typescript-eslint/explicit-function-return-type": 0,
+    "import/no-unresolved": "error",
+    "import/extensions": ["error", "never"],
     "node/exports-style": ["error", "module.exports"],
-    "node/file-extension-in-import": ["error", "always"],
     "node/no-unsupported-features/es-syntax": 0,
+    "node/file-extension-in-import": ["error", "never"],
     "node/prefer-global/buffer": ["error", "always"],
     "node/prefer-global/console": ["error", "always"],
     "node/prefer-global/process": ["error", "always"],
@@ -38,9 +50,55 @@
     "node/prefer-global/url": ["error", "always"],
     "node/prefer-promises/dns": "error",
     "node/prefer-promises/fs": "error",
+
+    // default rules and overrides
+    "accessor-pairs": [2, { "enforceForClassMembers": true }],
+    "array-callback-return": 2,
+    "curly": 2,
+    "default-case": 2,
+    "default-param-last": 1,
+    "dot-location": [1, "property"],
+    "dot-notation": 2,
+    "eqeqeq": [2, "smart"],
     "indent": ["error", 2],
     "linebreak-style": ["error", "unix"],
-    "quotes": ["error", "single"],
-    "semi": ["error", "always"]
+    "lines-between-class-members": [
+      "error",
+      "always",
+      { "exceptAfterSingleLine": true }
+    ],
+    "max-len": [1, { "code": 80 }],
+    "no-alert": 2,
+    "no-await-in-loop": 2,
+    "no-console": ["error", { "allow": ["debug", "info", "warn", "error"] }],
+    "no-underscore-dangle": 0,
+    "no-delete-var": 2,
+    "no-else-return": 2,
+    "no-empty-function": 2,
+    "no-eval": 2,
+    "no-extra-bind": 2,
+    "no-extra-label": 2,
+    "no-fallthrough": 1,
+    "no-lone-blocks": 2,
+    "no-return-assign": 2,
+    "no-return-await": 2,
+    "no-shadow": 1,
+    "no-template-curly-in-string": 2,
+    "no-throw-literal": 2,
+    "no-useless-call": 2,
+    "no-useless-concat": 2,
+    "no-useless-return": 2,
+    "prefer-template": 1,
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "radix": [2, "as-needed"],
+    "require-await": 2,
+    "semi": ["error", "always"],
+    "yoda": 1,
+
+    // disable duplicate and conflicting rules
+
+    "node/no-missing-import": 0,
+    "no-unused-vars": 0,
+    "no-use-before-define": 0
   }
 }
