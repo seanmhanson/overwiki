@@ -3,26 +3,19 @@ import crypto from 'crypto';
 // subject
 import HashedPassword from 'src/models/hashedPassword';
 
+// globals
+const securePassword = 'aSufficientlyLongPasswordShouldProveToBeSecure';
+const insecurePassword = 'insecurePassword';
+
+// mocks
+const randomBytesSpy = jest.spyOn(crypto, 'randomBytes');
+const pbkdf2Spy = jest.spyOn(crypto, 'pbkdf2');
+
 describe('src/models/hashedPassword', () => {
   let firstHashedPassword: HashedPassword;
   let secondHashedPassword: HashedPassword;
-  let insecurePassword: string;
-  let securePassword: string;
   let firstSalt: string;
   let secondSalt: string;
-  let randomBytesSpy: jest.SpyInstance;
-  let pbkdf2Spy: jest.SpyInstance;
-
-  beforeEach(() => {
-    securePassword = 'aSufficientlyLongPasswordShouldProveToBeSecure';
-    insecurePassword = 'insecurePassword';
-    randomBytesSpy = jest.spyOn(crypto, 'randomBytes');
-    pbkdf2Spy = jest.spyOn(crypto, 'pbkdf2');
-  });
-
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
 
   describe('when instantiated for a first password', () => {
     beforeEach(() => {

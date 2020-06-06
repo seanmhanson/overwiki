@@ -42,7 +42,6 @@
     "import/extensions": ["error", "never"],
     "node/exports-style": ["error", "module.exports"],
     "node/no-unsupported-features/es-syntax": 0,
-    "node/no-unpublished-import": 1,
     "node/file-extension-in-import": ["error", "never"],
     "node/prefer-global/buffer": ["error", "always"],
     "node/prefer-global/console": ["error", "always"],

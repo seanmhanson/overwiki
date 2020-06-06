@@ -1,16 +1,17 @@
 import User from 'src/models/user';
+import HashedPassword from 'src/models/hashedPassword';
 
 export default [
   new User({
     username: 'din@hylia.com',
-    password: 'power',
+    password: new HashedPassword(),
   }),
   new User({
     username: 'nayru@hylia.com',
-    password: 'wisdom',
+    password: new HashedPassword(),
   }),
   new User({
     username: 'farore@hylia.com',
-    password: 'courage',
+    password: new HashedPassword(),
   }),
 ];
