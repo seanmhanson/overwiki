@@ -28,16 +28,16 @@ abstract class BaseDao {
   static client: MongoClient;
   static db: Db;
 
-  #collection: Collection;
-  #collectionName: string;
-  #dbAndCollectionName: string;
+  private collection: Collection;
+  private collectionName: string;
+  private dbAndCollectionName: string;
 
   constructor(name: string) {
-    this.#collectionName = name;
+    this.collectionName = name;
   }
 
   public async init() {
-    console.debug(`Instantiating ${this.#collectionName} dao...`);
+    console.debug(`Instantiating ${this.collectionName} dao...`);
 
     if (BaseDao.db) {
       console.debug('Using pre-existing connection.');
@@ -50,8 +50,8 @@ abstract class BaseDao {
         useUnifiedTopology: true,
       });
       BaseDao.db = BaseDao.client.db(DB_NAME);
-      this.#collection = BaseDao.db.collection(this.#collectionName);
-      this.#dbAndCollectionName = `${BaseDao.db.databaseName}.${this.#collection.collectionName}`;
+      this.collection = BaseDao.db.collection(this.collectionName);
+      this.dbAndCollectionName = `${BaseDao.db.databaseName}.${this.collection.collectionName}`;
       console.debug('Database connection established successfully.');
 
       process.on('exit', (exitCode) => {
@@ -80,7 +80,7 @@ abstract class BaseDao {
   }
 
   protected async count(): CountResponse {
-    const count = await this.#collection.countDocuments();
+    const count = await this.collection.countDocuments();
     return {
       data: { count },
       statusCode: HttpStatus.OK,
@@ -91,7 +91,7 @@ abstract class BaseDao {
     const operation = Operation.Insert;
 
     try {
-      const { insertedId } = await this.#collection.insertOne(document);
+      const { insertedId } = await this.collection.insertOne(document);
       return { data: { insertedId }, statusCode: HttpStatus.CREATED };
     } catch (err) {
       return this.logError(err, operation);
@@ -102,7 +102,7 @@ abstract class BaseDao {
     const operation = Operation.Find;
 
     try {
-      const data = await this.#collection.findOne(query);
+      const data = await this.collection.findOne(query);
       if (data) {
         return { data, statusCode: HttpStatus.OK };
       }
@@ -126,7 +126,7 @@ abstract class BaseDao {
     try {
       const {
         result: { ok, n },
-      } = await this.#collection[command](query);
+      } = await this.collection[command](query);
       if (!ok) {
         return this.logError(new Error(), operation);
       }
@@ -141,7 +141,7 @@ abstract class BaseDao {
   }
 
   private logError(error: Error, operation: Operation): BaseDaoError {
-    console.error(`Error ${operation.toString()} ` + `document in ${this.#dbAndCollectionName}`);
+    console.error(`Error ${operation.toString()} ` + `document in ${this.dbAndCollectionName}`);
     return {
       error,
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

@@ -6,6 +6,7 @@ import userDaoFixtures from 'test/fixtures/userDaoFixtures';
 
 // subject
 import UserDao from 'src/dao/userDao';
+import HashedPassword from 'src/models/hashedPassword';
 
 describe('src/dao/userDao.ts', () => {
   let dao: UserDao;
@@ -35,9 +36,11 @@ describe('src/dao/userDao.ts', () => {
     let expectedId: ObjectId;
 
     beforeEach(async () => {
+      const password = new HashedPassword();
+      password.setPassword('eyeLikeZelda');
       const newUser = new User({
         username: 'link@hylia.com',
-        password: 'eyeLikeZelda',
+        password,
       });
 
       const { count } = await dao.countUsers();
