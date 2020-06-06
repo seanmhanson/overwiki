@@ -1,6 +1,12 @@
-import User, { ConstructorProps } from 'src/models/user';
+import User from 'src/models/user';
 import UserDao from 'src/dao/userDao';
 import { InsertOneData, FindOneData, DeleteData } from 'src/dao/types';
+import HashedPassword from 'src/models/hashedPassword';
+
+interface CreateUserProps {
+  username: string;
+  password: string;
+}
 
 export default class UserSvc {
   private dao: UserDao;
@@ -10,17 +16,16 @@ export default class UserSvc {
     await this.dao.init();
   }
 
-  async create({ username, password }: ConstructorProps): Promise<InsertOneData> {
-    // find if a user matching the username exists
+  async create({ username, password }: CreateUserProps): Promise<InsertOneData> {
     const existingUser = await this.dao.findByUsername(username);
     if (existingUser) {
       throw new Error('A user with the same username already exists.');
     }
 
-    // TODO: ensure password is secure
+    const hashedPassword = new HashedPassword();
+    await hashedPassword.setPassword(password);
 
-    // create new user
-    const user = new User({ username, password });
+    const user = new User({ username, password: hashedPassword });
     const response = await this.dao.create(user);
     return response;
   }
