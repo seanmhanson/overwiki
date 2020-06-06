@@ -80,7 +80,7 @@ abstract class BaseDao {
   }
 
   protected async count(): CountResponse {
-    const count = await this.#collection.count();
+    const count = await this.#collection.countDocuments();
     return {
       data: { count },
       statusCode: HttpStatus.OK,
