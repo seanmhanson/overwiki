@@ -1,0 +1,10 @@
+FROM node:12.13
+
+WORKDIR /home/node/app
+COPY /client/package*.json /home/node/app/
+RUN npm install
+
+# The usage of FORCE_COLOR and then cat is to work around create-react-app's
+# frankly rude continuous clearing of the scrollback buffer
+# See: https://github.com/facebook/create-react-app/issues/2495#issuecomment-344537005
+CMD FORCE_COLOR=true npm start | cat

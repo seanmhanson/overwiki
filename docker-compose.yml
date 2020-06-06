@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+    mongo:
+        image: 'mongo:4.2-bionic'
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: password
+    server:
+        build:
+            context: .
+            dockerfile: Dockerfile-server
+        volumes:
+            - ./server:/home/node/app
+            # One-way volume that preserves node_modules from inside the image
+            - /home/node/app/node_modules
+        ports:
+            - 3000:3000
+        environment:
+            MONGO_USERNAME: root
+            MONGO_PASSWORD: password
+            MONGO_SERVER: mongo
+        depends_on:
+            - mongo
+    client:
+        stdin_open: true
+        tty: true
+        build:
+            context: .
+            dockerfile: Dockerfile-client
+        volumes:
+            - ./client:/home/node/app
+            # One-way volume that preserves node_modules from inside the image
+            - /home/node/app/node_modules
+        ports:
+            - 3030:3030
+        environment:
+            REACT_APP_API_BASE: 'http://localhost:3000/'

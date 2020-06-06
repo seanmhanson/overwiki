@@ -5,7 +5,7 @@
     "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "dist/src",
+    "outDir": "dist",
     "target": "es6",
     "typeRoots": ["./node_modules/@types"],
     "types": ["jest", "node"]

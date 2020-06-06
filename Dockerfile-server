@@ -1,0 +1,7 @@
+FROM node:12.13
+
+WORKDIR /home/node/app
+COPY /server/package*.json /home/node/app/
+RUN npm install
+
+CMD ["npm", "run", "start"]

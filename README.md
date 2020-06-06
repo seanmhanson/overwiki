@@ -2,7 +2,38 @@
 
 A minimal, streamlined Wikipedia-like web application.
 
-## Developer Setup
+There are two ways to run this application for development:
+
+1. Using Docker Compose to provision and manage application-related containers
+2. Self-managing dependencies and servers
+
+## Developer Setup (Docker Compose)
+
+These instructions assume that you have Docker Compose installed. You can install with the instructions [here](https://docs.docker.com/compose/install/#install-compose). For most platforms Docker Compose comes bundled with Docker and the installation process is quick and easy.
+
+From inside the Overwiki project directory run:
+
+```bash
+docker-compose up
+```
+
+This will spin up the following three services:
+
+- React-based client application
+- Express-based server application
+- MongoDB server
+
+Once these services are started, you can access the client from you web browser at `http://localhost:3030` and the server at `http://localhost:3000`.
+
+You can run one-off commands on each service using `docker-compose run` (to start a container and run _only_ that command) or `docker-compose exec` (to execute a command on an already running server). E.g.,
+
+```bash
+docker-compose run server npm test
+```
+
+To learn more about available commands, see the [Docker Compose documentation](https://docs.docker.com/compose/reference/).
+
+## Developer Setup (Self-Managed)
 
 ### 1. Install Node and NPM
 
