@@ -27,12 +27,15 @@
     }
   },
   "dependencies": {
+    "@types/zxcvbn": "^4.4.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "http-status-codes": "^1.4.0",
     "mongodb": "^3.5.7",
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "passport-local": "^1.0.0",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.1.5",

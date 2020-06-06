@@ -51,17 +51,13 @@ abstract class BaseDao {
       });
       BaseDao.db = BaseDao.client.db(DB_NAME);
       this.#collection = BaseDao.db.collection(this.#collectionName);
-      this.#dbAndCollectionName = `${BaseDao.db.databaseName}.${
-        this.#collection.collectionName
-      }`;
+      this.#dbAndCollectionName = `${BaseDao.db.databaseName}.${this.#collection.collectionName}`;
       console.debug('Database connection established successfully.');
 
       process.on('exit', (exitCode) => {
         if (BaseDao.client?.isConnected()) {
           BaseDao.client.close();
-          console.debug(
-            `Database connection closed with exit code ${exitCode}`
-          );
+          console.debug(`Database connection closed with exit code ${exitCode}`);
         }
       });
     } catch (err) {
@@ -123,10 +119,7 @@ abstract class BaseDao {
     return this.delete({ query });
   }
 
-  private async delete({
-    query = {},
-    deleteMany = false,
-  }: DeleteOptions = {}): DeleteResponse {
+  private async delete({ query = {}, deleteMany = false }: DeleteOptions = {}): DeleteResponse {
     const operation = Operation.Delete;
     const command = deleteMany ? 'deleteMany' : 'deleteOne';
 
@@ -148,10 +141,7 @@ abstract class BaseDao {
   }
 
   private logError(error: Error, operation: Operation): BaseDaoError {
-    console.error(
-      `Error ${operation.toString()} ` +
-        `document in ${this.#dbAndCollectionName}`
-    );
+    console.error(`Error ${operation.toString()} ` + `document in ${this.#dbAndCollectionName}`);
     return {
       error,
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

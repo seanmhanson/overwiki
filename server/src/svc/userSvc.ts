@@ -10,10 +10,7 @@ export default class UserSvc {
     await this.dao.init();
   }
 
-  async create({
-    username,
-    password,
-  }: ConstructorProps): Promise<InsertOneData> {
+  async create({ username, password }: ConstructorProps): Promise<InsertOneData> {
     // find if a user matching the username exists
     const existingUser = await this.dao.findByUsername(username);
     if (existingUser) {
