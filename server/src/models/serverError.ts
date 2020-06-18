@@ -4,12 +4,15 @@ export default class ServerError extends Error {
   public statusCode: number;
 
   constructor({ message, formatMessage, name }: ErrorType, options?: ErrorOptions) {
-    super(formatMessage ? formatMessage(options) : message);
+    const useFormattedMessage = formatMessage && options;
+    const setStatusCode = options && options.statusCode;
+
+    super(useFormattedMessage ? formatMessage(options) : message);
     this.name = name ?? ErrorNames.SERVER_ERROR;
 
-    const { statusCode } = options;
-    if (statusCode) {
-      this.statusCode = statusCode as number;
+    if (setStatusCode) {
+      const { statusCode } = options;
+      this.statusCode = statusCode;
     }
   }
 }

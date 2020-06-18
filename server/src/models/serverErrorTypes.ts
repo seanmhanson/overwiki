@@ -10,7 +10,7 @@ export type ErrorOptions = {
 export interface ErrorType {
   message: string;
   formatMessage?: (options: ErrorOptions) => string;
-  name: ErrorNames;
+  name?: ErrorNames;
 }
 
 // error name values
@@ -19,6 +19,18 @@ export enum ErrorNames {
   DAO_ERROR = 'DaoError',
   MALFORMED_REQUEST_ERROR = 'MalformedRequestError',
   SERVER_ERROR = 'ServerError',
+}
+
+// helpers
+function getFieldsMessage(fields: Array<string>) {
+  if (!fields.length) {
+    return '';
+  }
+
+  return fields.reduce((acc, fieldName, index, allFields) => {
+    const lastFieldName = index === allFields.length - 1;
+    return `${acc} ${fieldName}${lastFieldName ? '.' : ','}`;
+  }, 'Expected body fields:');
 }
 
 // error metadata
@@ -48,7 +60,7 @@ export const AuthError = {
 export const DaoError = {
   CONNECTION_FAILED: {
     message: 'Error connecting to database.',
-    formatMessage: ({ dbUri }: ErrorOptions) => `Error connecting to database at: ${dbUri}`,
+    formatMessage: ({ dbUri }: ErrorOptions) => `Error connecting to database via URI "${dbUri}".`,
     name: ErrorNames.DAO_ERROR,
   },
   COUNT_ERROR: {
@@ -83,18 +95,13 @@ export const DaoError = {
   },
 };
 
-function getFieldsMessage(fields: Array<string>) {
-  return fields.reduce((acc, fieldName, index, allFields) => {
-    const lastFieldName = index === allFields.length - 1;
-    return `${acc} ${fieldName}${lastFieldName ? '.' : ','}`;
-  }, 'Expected body fields:');
-}
-
 export const MalformedRequestError = {
   CREATE_USER: {
     message: 'The create user request is malformed.',
-    formatMessage: ({ fields }) =>
-      `The create user request is malformed. ${getFieldsMessage(fields)}`,
+    formatMessage: ({ fields = [] }) => {
+      const fieldsMessage = getFieldsMessage(fields);
+      return `The create user request is malformed.${fieldsMessage && ` ${fieldsMessage}`}`;
+    },
     name: ErrorNames.MALFORMED_REQUEST_ERROR,
   },
 };
