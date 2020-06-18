@@ -51,11 +51,9 @@ describe('src/dao/userDao.ts', () => {
       expectedId = newUser._id;
     });
 
-    it("returns the inserted user's id and updates the collection", () => {
+    it("returns the inserted user's id and updates the collection", async () => {
       expect(returnedId).toEqual(expectedId);
-    });
 
-    it('updates the collection', async () => {
       const { count } = await dao.countUsers();
       expect(count).toEqual(initialCount + 1);
     });

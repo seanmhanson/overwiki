@@ -1,24 +1,14 @@
 import { MongoClient, Db, Collection } from 'mongodb';
 import HttpStatus from 'http-status-codes';
 
-import {
-  InsertOneResponse,
-  FindOneResponse,
-  DeleteResponse,
-  CountResponse,
-  BaseDaoError,
-} from 'src/dao/types';
+import { InsertOneResponse, FindOneResponse, DeleteResponse, CountResponse } from 'src/dao/types';
+
+import ServerError from 'src/models/serverError';
+import { DaoError, ErrorType } from 'src/models/serverErrorTypes';
 
 interface DeleteOptions {
   query?: object;
   deleteMany?: boolean;
-}
-
-enum Operation {
-  Find = 'finding',
-  Insert = 'inserting',
-  Delete = 'deleting',
-  Update = 'updating',
 }
 
 const DB_URI = 'mongodb://localhost:27030';
@@ -60,9 +50,8 @@ abstract class BaseDao {
           console.debug(`Database connection closed with exit code ${exitCode}`);
         }
       });
-    } catch (err) {
-      console.error(`Error connecting to database at: ${DB_URI}`);
-      throw err;
+    } catch {
+      throw new ServerError(DaoError.CONNECTION_FAILED, { dbUri: DB_URI });
     }
   }
 
@@ -80,27 +69,27 @@ abstract class BaseDao {
   }
 
   protected async count(): CountResponse {
-    const count = await this.collection.countDocuments();
-    return {
-      data: { count },
-      statusCode: HttpStatus.OK,
-    };
+    try {
+      const count = await this.collection.countDocuments();
+      return {
+        data: { count },
+        statusCode: HttpStatus.OK,
+      };
+    } catch {
+      throw this.getDaoError(DaoError.COUNT_ERROR);
+    }
   }
 
   protected async insertOne(document: object): InsertOneResponse {
-    const operation = Operation.Insert;
-
     try {
       const { insertedId } = await this.collection.insertOne(document);
       return { data: { insertedId }, statusCode: HttpStatus.CREATED };
-    } catch (err) {
-      return this.logError(err, operation);
+    } catch {
+      throw this.getDaoError(DaoError.INSERT_ERROR);
     }
   }
 
   protected async findOne(query: object): FindOneResponse {
-    const operation = Operation.Find;
-
     try {
       const data = await this.collection.findOne(query);
       if (data) {
@@ -109,9 +98,9 @@ abstract class BaseDao {
       if (data === null) {
         return { data: null, statusCode: HttpStatus.NO_CONTENT };
       }
-      return this.logError(new Error(), operation);
-    } catch (err) {
-      return this.logError(err, operation);
+      throw this.getDaoError(DaoError.FIND_ERROR);
+    } catch {
+      throw this.getDaoError(DaoError.FIND_ERROR);
     }
   }
 
@@ -120,7 +109,6 @@ abstract class BaseDao {
   }
 
   private async delete({ query = {}, deleteMany = false }: DeleteOptions = {}): DeleteResponse {
-    const operation = Operation.Delete;
     const command = deleteMany ? 'deleteMany' : 'deleteOne';
 
     try {
@@ -128,24 +116,23 @@ abstract class BaseDao {
         result: { ok, n },
       } = await this.collection[command](query);
       if (!ok) {
-        return this.logError(new Error(), operation);
+        throw this.getDaoError(DaoError.DELETE_ERROR);
       }
 
       return {
         data: { n },
         statusCode: n ? HttpStatus.OK : HttpStatus.NOT_FOUND,
       };
-    } catch (err) {
-      return this.logError(err, operation);
+    } catch {
+      throw this.getDaoError(DaoError.DELETE_ERROR);
     }
   }
 
-  private logError(error: Error, operation: Operation): BaseDaoError {
-    console.error(`Error ${operation.toString()} ` + `document in ${this.dbAndCollectionName}`);
-    return {
-      error,
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-    };
+  private getDaoError(errorType: ErrorType, statusCode = HttpStatus.INTERNAL_SERVER_ERROR) {
+    return new ServerError(errorType, {
+      dbAndCollectionName: this.dbAndCollectionName,
+      statusCode,
+    });
   }
 }
 

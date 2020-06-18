@@ -1,6 +1,9 @@
 import crypto from 'crypto';
 import zxcvbn from 'zxcvbn';
 
+import { AuthError } from 'src/models/serverErrorTypes';
+import ServerError from 'src/models/serverError';
+
 export default class HashedPassword {
   private static iterations = 100000;
   private static keylen = 128;
@@ -27,7 +30,7 @@ export default class HashedPassword {
 
     if (score < 3) {
       // TODO: improve error handling with zxcvbn's result.feedback
-      throw new Error('The password provided is insecure');
+      throw new ServerError(AuthError.WEAK_PASSWORD);
     }
   }
 

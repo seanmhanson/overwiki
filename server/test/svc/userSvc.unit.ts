@@ -2,6 +2,9 @@ import HashedPassword from 'src/models/hashedPassword';
 import UserDao from 'src/dao/userDao';
 import User from 'src/models/user';
 
+import { AuthError } from 'src/models/serverErrorTypes';
+import ServerError from 'src/models/serverError';
+
 // subject
 import UserSvc from 'src/svc/userSvc';
 
@@ -18,6 +21,7 @@ const UserMock = (User as unknown) as jest.Mock<User>;
 // constants
 const username = 'username';
 const password = 'password';
+const confirmPassword = 'password';
 const userFixture = new User({ username, password: new HashedPassword() });
 
 describe('src/svc/userSvc', () => {
@@ -37,7 +41,7 @@ describe('src/svc/userSvc', () => {
     let mockPasswordInstance: HashedPassword;
 
     beforeEach(async () => {
-      await userSvc.create({ username, password });
+      await userSvc.create({ username, password, confirmPassword });
       mockPasswordInstance = HashedPasswordMock.mock.instances[0];
     });
 
@@ -62,7 +66,7 @@ describe('src/svc/userSvc', () => {
     });
 
     it('throws an error and does not create the user', async () => {
-      await expect(() => userSvc.create({ username, password })).rejects.toThrow();
+      await expect(() => userSvc.create({ username, password, confirmPassword })).rejects.toThrow();
 
       expect(UserMock).not.toHaveBeenCalled();
       expect(HashedPasswordMock).not.toHaveBeenCalled();
@@ -73,12 +77,12 @@ describe('src/svc/userSvc', () => {
   describe('when trying to create a user with an invalid password', () => {
     beforeEach(() => {
       jest.spyOn(HashedPassword.prototype, 'setPassword').mockImplementation(() => {
-        throw new Error();
+        throw new ServerError(AuthError.WEAK_PASSWORD);
       });
     });
 
     it('throws an error and does not create the user', async () => {
-      await expect(() => userSvc.create({ username, password })).rejects.toThrow();
+      await expect(() => userSvc.create({ username, password, confirmPassword })).rejects.toThrow();
 
       expect(UserMock).not.toHaveBeenCalled();
       expect(HashedPasswordMock).toHaveBeenCalled();

@@ -2,10 +2,13 @@ import User from 'src/models/user';
 import UserDao from 'src/dao/userDao';
 import { InsertOneData, FindOneData, DeleteData } from 'src/dao/types';
 import HashedPassword from 'src/models/hashedPassword';
+import { AuthError } from 'src/models/serverErrorTypes';
+import ServerError from 'src/models/serverError';
 
 interface CreateUserProps {
   username: string;
   password: string;
+  confirmPassword: string;
 }
 
 export default class UserSvc {
@@ -16,10 +19,14 @@ export default class UserSvc {
     await this.dao.init();
   }
 
-  async create({ username, password }: CreateUserProps): Promise<InsertOneData> {
+  async create({ username, password, confirmPassword }: CreateUserProps): Promise<InsertOneData> {
     const existingUser = await this.dao.findByUsername(username);
     if (existingUser) {
-      throw new Error('A user with the same username already exists.');
+      throw new ServerError(AuthError.DUPLICATE_USERNAME);
+    }
+
+    if (password !== confirmPassword) {
+      throw new ServerError(AuthError.PASSWORDS_DONT_MATCH);
     }
 
     const hashedPassword = new HashedPassword();
