@@ -40,6 +40,8 @@
     "@typescript-eslint/explicit-function-return-type": 0,
     "import/no-unresolved": "error",
     "import/extensions": ["error", "never"],
+    "jest/no-try-expect": 0,
+    "jest/expect-expect": ["error", { "assertFunctionNames": ["expect*"] }],
     "node/exports-style": ["error", "module.exports"],
     "node/no-unsupported-features/es-syntax": 0,
     "node/file-extension-in-import": ["error", "never"],

@@ -4,7 +4,7 @@ export type InsertOneData = { insertedId: ObjectId };
 export type FindOneData = { [key: string]: any } | null;
 export type DeleteData = { n: number };
 export type CountData = { count: number };
-type StatusCode = number; // update when http-status-codes provides a union type
+type StatusCode = number;
 
 interface BaseDaoSuccess<T> {
   data: T;

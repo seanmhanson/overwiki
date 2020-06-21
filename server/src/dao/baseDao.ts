@@ -1,7 +1,4 @@
 import { MongoClient, Db, Collection } from 'mongodb';
-import HttpStatus from 'http-status-codes';
-
-import { InsertOneResponse, FindOneResponse, DeleteResponse, CountResponse } from 'src/dao/types';
 
 import ServerError from 'src/models/serverError';
 import { DaoError, ErrorType } from 'src/models/serverErrorTypes';
@@ -64,39 +61,36 @@ abstract class BaseDao {
     console.debug('No database connection exists.');
   }
 
-  public deleteAll(): DeleteResponse {
+  public deleteAll() {
     return this.delete({ deleteMany: true });
   }
 
-  protected async count(): CountResponse {
+  protected async count() {
     try {
       const count = await this.collection.countDocuments();
-      return {
-        data: { count },
-        statusCode: HttpStatus.OK,
-      };
+      return { data: { count } };
     } catch {
       throw this.getDaoError(DaoError.COUNT_ERROR);
     }
   }
 
-  protected async insertOne(document: object): InsertOneResponse {
+  protected async insertOne(document: object) {
     try {
       const { insertedId } = await this.collection.insertOne(document);
-      return { data: { insertedId }, statusCode: HttpStatus.CREATED };
+      return { data: { insertedId } };
     } catch {
       throw this.getDaoError(DaoError.INSERT_ERROR);
     }
   }
 
-  protected async findOne(query: object): FindOneResponse {
+  protected async findOne(query: object) {
     try {
       const data = await this.collection.findOne(query);
       if (data) {
-        return { data, statusCode: HttpStatus.OK };
+        return { data };
       }
       if (data === null) {
-        return { data: null, statusCode: HttpStatus.NO_CONTENT };
+        return { data: null };
       }
       throw this.getDaoError(DaoError.FIND_ERROR);
     } catch {
@@ -104,11 +98,11 @@ abstract class BaseDao {
     }
   }
 
-  protected deleteOne(query: object): DeleteResponse {
+  protected deleteOne(query: object) {
     return this.delete({ query });
   }
 
-  private async delete({ query = {}, deleteMany = false }: DeleteOptions = {}): DeleteResponse {
+  private async delete({ query = {}, deleteMany = false }: DeleteOptions = {}) {
     const command = deleteMany ? 'deleteMany' : 'deleteOne';
 
     try {
@@ -121,17 +115,15 @@ abstract class BaseDao {
 
       return {
         data: { n },
-        statusCode: n ? HttpStatus.OK : HttpStatus.NOT_FOUND,
       };
     } catch {
       throw this.getDaoError(DaoError.DELETE_ERROR);
     }
   }
 
-  private getDaoError(errorType: ErrorType, statusCode = HttpStatus.INTERNAL_SERVER_ERROR) {
+  private getDaoError(errorType: ErrorType) {
     return new ServerError(errorType, {
       dbAndCollectionName: this.dbAndCollectionName,
-      statusCode,
     });
   }
 }

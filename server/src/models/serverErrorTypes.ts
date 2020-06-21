@@ -1,3 +1,5 @@
+import status from 'http-status';
+
 // error-related type declarations
 interface ReservedOptions {
   statusCode?: number;
@@ -38,22 +40,27 @@ export const AuthError = {
   WEAK_PASSWORD: {
     message: 'The provided password is too weak.',
     name: ErrorNames.AUTH_ERROR,
+    statusCode: status.BAD_REQUEST,
   },
   PASSWORDS_DONT_MATCH: {
     message: 'The provided passwords do not match.',
     name: ErrorNames.AUTH_ERROR,
+    statusCode: status.BAD_REQUEST,
   },
   DUPLICATE_USERNAME: {
     message: 'The provided username is already associated with an account.',
     name: ErrorNames.AUTH_ERROR,
+    statusCode: status.BAD_REQUEST,
   },
   INVALID_USERNAME: {
     message: 'The provided username is not a valid email address.',
     name: ErrorNames.AUTH_ERROR,
+    statusCode: status.BAD_REQUEST,
   },
   INVALID_CREDENTIALS: {
     message: 'The provided credentials are invalid.',
     name: ErrorNames.AUTH_ERROR,
+    statusCode: status.BAD_REQUEST,
   },
 } as const;
 
@@ -62,36 +69,42 @@ export const DaoError = {
     message: 'Error connecting to database.',
     formatMessage: ({ dbUri }: ErrorOptions) => `Error connecting to database via URI "${dbUri}".`,
     name: ErrorNames.DAO_ERROR,
+    statusCode: status.INTERNAL_SERVER_ERROR,
   },
   COUNT_ERROR: {
     message: 'Error getting document count for collection.',
     formatMessage: ({ dbAndCollectionName }: ErrorOptions) =>
       `Error getting document count for ${dbAndCollectionName}.`,
     name: ErrorNames.DAO_ERROR,
+    statusCode: status.INTERNAL_SERVER_ERROR,
   },
   FIND_ERROR: {
     message: 'Error finding document(s).',
     formatMessage: ({ dbAndCollectionName }: ErrorOptions) =>
       `Error finding document(s) in ${dbAndCollectionName}.`,
     name: ErrorNames.DAO_ERROR,
+    statusCode: status.INTERNAL_SERVER_ERROR,
   },
   INSERT_ERROR: {
     message: 'Error inserting document(s).',
     formatMessage: ({ dbAndCollectionName }: ErrorOptions) =>
       `Error inserting document(s) in ${dbAndCollectionName}.`,
     name: ErrorNames.DAO_ERROR,
+    statusCode: status.INTERNAL_SERVER_ERROR,
   },
   UPDATE_ERROR: {
     message: 'Error updating document(s).',
     formatMessage: ({ dbAndCollectionName }: ErrorOptions) =>
       `Error updating document(s) in ${dbAndCollectionName}.`,
     name: ErrorNames.DAO_ERROR,
+    statusCode: status.INTERNAL_SERVER_ERROR,
   },
   DELETE_ERROR: {
     message: 'Error deleting document(s).',
     formatMessage: ({ dbAndCollectionName }: ErrorOptions) =>
       `Error deleting document(s) in ${dbAndCollectionName}.`,
     name: ErrorNames.DAO_ERROR,
+    statusCode: status.INTERNAL_SERVER_ERROR,
   },
 };
 
@@ -103,5 +116,6 @@ export const MalformedRequestError = {
       return `The create user request is malformed.${fieldsMessage && ` ${fieldsMessage}`}`;
     },
     name: ErrorNames.MALFORMED_REQUEST_ERROR,
+    statusCode: status.BAD_REQUEST,
   },
 };

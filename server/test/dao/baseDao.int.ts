@@ -1,4 +1,3 @@
-import HttpStatus from 'http-status-codes';
 import { ObjectId } from 'mongodb';
 
 // subject
@@ -49,24 +48,17 @@ describe('src/dao/baseDao.ts', () => {
   describe('when inserting a document', () => {
     const existingId = new ObjectId();
     let expectedId: ObjectId;
-    let status: number;
 
     describe('and the document does not include an _id field', () => {
       beforeEach(async () => {
         const {
           data: { insertedId },
-          statusCode,
         } = await dao.testInsertOne({ a: 1 });
         expectedId = insertedId;
-        status = statusCode;
       });
 
       it('returns a created id', () => {
         expect(expectedId.toString()).toMatch(OBJECT_ID_REGEX);
-      });
-
-      it('returns a created http response', () => {
-        expect(status).toEqual(HttpStatus.CREATED);
       });
     });
 
@@ -74,25 +66,18 @@ describe('src/dao/baseDao.ts', () => {
       beforeEach(async () => {
         const {
           data: { insertedId },
-          statusCode,
         } = await dao.testInsertOne({ a: 1, _id: existingId });
         expectedId = insertedId;
-        status = statusCode;
       });
 
       it('returns an objectId corresponding to the provided _id', () => {
         expect(expectedId).toEqual(existingId);
-      });
-
-      it('returns a created http response', () => {
-        expect(status).toEqual(HttpStatus.CREATED);
       });
     });
   });
 
   describe('when querying for a document', () => {
     const expectedDocument = { a: 1, _id: 1 };
-    let status: number;
     let document: object;
 
     describe('and the document exists', () => {
@@ -101,37 +86,27 @@ describe('src/dao/baseDao.ts', () => {
         await dao.testInsertOne({ b: 2, _id: 2 });
         await dao.testInsertOne({ c: 3, _id: 3 });
 
-        const { data, statusCode } = await dao.testFindOne({
+        const { data } = await dao.testFindOne({
           a: { $exists: true },
         });
         document = data;
-        status = statusCode;
       });
 
       it('an appropriate query returns the document', () => {
         expect(document).toEqual(expectedDocument);
       });
-
-      it('returns an OK http response', () => {
-        expect(status).toEqual(HttpStatus.OK);
-      });
     });
 
     describe('and the document does not exist', () => {
       beforeEach(async () => {
-        const { data, statusCode } = await dao.testFindOne({
+        const { data } = await dao.testFindOne({
           a: { $exists: true },
         });
         document = data;
-        status = statusCode;
       });
 
       it('the appropriate query does not return a document', () => {
         expect(document).toBeNull();
-      });
-
-      it('returns a no content http response', () => {
-        expect(status).toEqual(HttpStatus.NO_CONTENT);
       });
     });
   });
@@ -140,7 +115,6 @@ describe('src/dao/baseDao.ts', () => {
     let documentId: ObjectId;
     let initialCount: number;
     let numberDeleted: number;
-    let status: number;
 
     describe('when first inserting a document', () => {
       beforeEach(async () => {
@@ -162,18 +136,12 @@ describe('src/dao/baseDao.ts', () => {
         beforeEach(async () => {
           const {
             data: { n },
-            statusCode,
           } = await dao.testDeleteOne({ _id: documentId });
-          status = statusCode;
           numberDeleted = n;
         });
 
         it('returns that one document was deleted', () => {
           expect(numberDeleted).toEqual(1);
-        });
-
-        it('returns a success http response', () => {
-          expect(status).toEqual(HttpStatus.OK);
         });
 
         it('indicates the correct document count', async () => {
@@ -188,18 +156,12 @@ describe('src/dao/baseDao.ts', () => {
         beforeEach(async () => {
           const {
             data: { n },
-            statusCode,
           } = await dao.testDeleteOne({ _id: 0 });
-          status = statusCode;
           numberDeleted = n;
         });
 
         it('returns that no documents were deleted', () => {
           expect(numberDeleted).toEqual(0);
-        });
-
-        it('returns a not found http response', () => {
-          expect(status).toEqual(HttpStatus.NOT_FOUND);
         });
 
         it('indicates the document count remains unchanged', async () => {

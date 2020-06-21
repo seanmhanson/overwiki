@@ -34,8 +34,8 @@ async function registerUser(req: Request, resp: Response, next: NextFunction) {
 }
 
 // routes
-const userRouter = Router();
-userRouter.post('/', registerUser);
+const userRoutes = Router();
+userRoutes.post('/', registerUser);
 
-export const BASE_URL = '/user';
-export default userRouter;
+export const userBaseUrl = '/user';
+export default userRoutes;
