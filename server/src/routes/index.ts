@@ -1,7 +1,3 @@
-import userRoutes from './userRoutes';
+import User from './userRoutes';
 
-const Routes = {
-  User: userRoutes,
-};
-
-export default Routes;
+export { User };

@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 // routes
-import Routes from 'routes';
+import * as Routes from 'routes';
 
 // this should be a config value
 const apiPort = 3000;

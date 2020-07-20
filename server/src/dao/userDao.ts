@@ -24,6 +24,11 @@ export default class UserDao extends BaseDao {
     return data;
   }
 
+  public async deleteAllUsers(): Promise<DeleteData> {
+    const { data } = await super.deleteAll();
+    return data;
+  }
+
   public async countUsers(): Promise<CountData> {
     const {
       data: { count },

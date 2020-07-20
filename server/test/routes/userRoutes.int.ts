@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { ServerError, ErrorTypes } from 'models';
-import User from 'routes';
+import { User } from 'routes';
 
 const { MalformedRequestError, AuthError } = ErrorTypes;
 const { baseUrl: userBaseUrl } = User;

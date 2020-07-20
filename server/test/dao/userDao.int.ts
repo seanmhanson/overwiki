@@ -24,7 +24,7 @@ describe('src/dao/userDao.ts', () => {
   });
 
   afterEach(async () => {
-    await dao.deleteAll();
+    await dao.deleteAllUsers();
   });
 
   describe('when creating a new user', () => {

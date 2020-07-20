@@ -10,6 +10,7 @@
     "types": ["node", "jest", "mongodb"],
     "paths": {
       "dao": ["src/dao"],
+      "fixtures": ["test/fixtures"],
       "models": ["src/models"],
       "routes": ["src/routes"],
       "svc": ["src/svc"]
