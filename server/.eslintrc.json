@@ -27,6 +27,10 @@
       "@typescript-eslint/parser": [".ts"]
     },
     "import/resolver": {
+      "node": {
+        "paths": ["src", "test"],
+        "extensions": [".ts"]
+      },
       "typescript": {
         "directory": "./tsconfig.json",
         "alwaysTryTypes": true
@@ -38,8 +42,10 @@
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
-    "import/no-unresolved": "error",
+    "@typescript-eslint/no-var-requires": 0,
     "import/extensions": ["error", "never"],
+    "import/no-unresolved": "error",
+    "import/prefer-default-export": 0,
     "jest/no-try-expect": 0,
     "jest/expect-expect": ["error", { "assertFunctionNames": ["expect*"] }],
     "node/exports-style": ["error", "module.exports"],

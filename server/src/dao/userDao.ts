@@ -1,7 +1,6 @@
-import BaseDao from 'src/dao/baseDao';
-import User from 'src/models/user';
-
-import { InsertOneData, FindOneData, DeleteData, CountData } from 'src/dao/types';
+import { User } from 'models';
+import BaseDao from './baseDao';
+import { InsertOneData, FindOneData, DeleteData, CountData } from './types';
 
 export default class UserDao extends BaseDao {
   static collectionName = 'users';

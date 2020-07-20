@@ -1,30 +1,23 @@
 import { ObjectId } from 'mongodb';
 
 // subject
-import BaseDao from 'src/dao/baseDao';
+import { BaseDao } from 'dao';
 
+// This extends the abstract class with a class used only
+// in testing, which exposes all methods of the parent.
+// As a heads-up, we should never expose abstract class methods
+// directly, outside of testing the abstract class.
 class TestBaseDao extends BaseDao {
-  static collectionName = 'test';
-
   constructor() {
-    super(TestBaseDao.collectionName);
+    super('test');
   }
 
-  public testInsertOne(document: object) {
-    return super.insertOne(document);
-  }
-
-  public testFindOne(query: object) {
-    return super.findOne(query);
-  }
-
-  public testDeleteOne(query: object) {
-    return super.deleteOne(query);
-  }
-
-  public testCount() {
-    return super.count();
-  }
+  public _init = super.init;
+  public _count = super.count;
+  public _deleteAll = super.deleteAll;
+  public _insertOne = super.insertOne;
+  public _findOne = super.findOne;
+  public _deleteOne = super.deleteOne;
 }
 
 const OBJECT_ID_REGEX = /^[A-Fa-f0-9]{24}$/;
@@ -34,15 +27,15 @@ describe('src/dao/baseDao.ts', () => {
 
   beforeAll(async () => {
     dao = new TestBaseDao();
-    await dao.init();
+    await dao._init();
   });
 
   afterAll(async () => {
-    await TestBaseDao.disconnect();
+    await BaseDao.disconnect();
   });
 
   afterEach(async () => {
-    await dao.deleteAll();
+    await dao._deleteAll();
   });
 
   describe('when inserting a document', () => {
@@ -53,7 +46,7 @@ describe('src/dao/baseDao.ts', () => {
       beforeEach(async () => {
         const {
           data: { insertedId },
-        } = await dao.testInsertOne({ a: 1 });
+        } = await dao._insertOne({ a: 1 });
         expectedId = insertedId;
       });
 
@@ -66,7 +59,7 @@ describe('src/dao/baseDao.ts', () => {
       beforeEach(async () => {
         const {
           data: { insertedId },
-        } = await dao.testInsertOne({ a: 1, _id: existingId });
+        } = await dao._insertOne({ a: 1, _id: existingId });
         expectedId = insertedId;
       });
 
@@ -82,11 +75,11 @@ describe('src/dao/baseDao.ts', () => {
 
     describe('and the document exists', () => {
       beforeEach(async () => {
-        await dao.testInsertOne(expectedDocument);
-        await dao.testInsertOne({ b: 2, _id: 2 });
-        await dao.testInsertOne({ c: 3, _id: 3 });
+        await dao._insertOne(expectedDocument);
+        await dao._insertOne({ b: 2, _id: 2 });
+        await dao._insertOne({ c: 3, _id: 3 });
 
-        const { data } = await dao.testFindOne({
+        const { data } = await dao._findOne({
           a: { $exists: true },
         });
         document = data;
@@ -99,7 +92,7 @@ describe('src/dao/baseDao.ts', () => {
 
     describe('and the document does not exist', () => {
       beforeEach(async () => {
-        const { data } = await dao.testFindOne({
+        const { data } = await dao._findOne({
           a: { $exists: true },
         });
         document = data;
@@ -120,10 +113,10 @@ describe('src/dao/baseDao.ts', () => {
       beforeEach(async () => {
         const {
           data: { insertedId },
-        } = await dao.testInsertOne({ a: 1 });
+        } = await dao._insertOne({ a: 1 });
         const {
           data: { count },
-        } = await dao.testCount();
+        } = await dao._count();
         documentId = insertedId;
         initialCount = count;
       });
@@ -136,7 +129,7 @@ describe('src/dao/baseDao.ts', () => {
         beforeEach(async () => {
           const {
             data: { n },
-          } = await dao.testDeleteOne({ _id: documentId });
+          } = await dao._deleteOne({ _id: documentId });
           numberDeleted = n;
         });
 
@@ -147,7 +140,7 @@ describe('src/dao/baseDao.ts', () => {
         it('indicates the correct document count', async () => {
           const {
             data: { count },
-          } = await dao.testCount();
+          } = await dao._count();
           expect(count).toEqual(initialCount - 1);
         });
       });
@@ -156,7 +149,7 @@ describe('src/dao/baseDao.ts', () => {
         beforeEach(async () => {
           const {
             data: { n },
-          } = await dao.testDeleteOne({ _id: 0 });
+          } = await dao._deleteOne({ _id: 0 });
           numberDeleted = n;
         });
 
@@ -167,7 +160,7 @@ describe('src/dao/baseDao.ts', () => {
         it('indicates the document count remains unchanged', async () => {
           const {
             data: { count },
-          } = await dao.testCount();
+          } = await dao._count();
           expect(count).toEqual(initialCount);
         });
       });
@@ -179,12 +172,12 @@ describe('src/dao/baseDao.ts', () => {
 
     describe('when first insertings documents', () => {
       beforeEach(async () => {
-        await dao.testInsertOne({ a: 1 });
-        await dao.testInsertOne({ b: 2 });
-        await dao.testInsertOne({ c: 3 });
+        await dao._insertOne({ a: 1 });
+        await dao._insertOne({ b: 2 });
+        await dao._insertOne({ c: 3 });
         const {
           data: { count },
-        } = await dao.testCount();
+        } = await dao._count();
         initialCount = count;
       });
 
@@ -194,13 +187,13 @@ describe('src/dao/baseDao.ts', () => {
 
       describe('when deleting all documents', () => {
         beforeEach(async () => {
-          await dao.deleteAll();
+          await dao._deleteAll();
         });
 
         it('returns a count of zero for the collection', async () => {
           const {
             data: { count },
-          } = await dao.testCount();
+          } = await dao._count();
           expect(count).toEqual(0);
         });
       });

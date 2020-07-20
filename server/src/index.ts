@@ -1,9 +1,11 @@
+import 'module-alias/register';
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
 // routes
-import userRoutes, { userBaseUrl } from 'src/routes/userRoutes';
+import Routes from 'routes';
 
 // this should be a config value
 const apiPort = 3000;
@@ -15,7 +17,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // add the routes
-app.use(userBaseUrl, userRoutes);
+Object.values(Routes).forEach(({ routes, baseUrl }) => {
+  app.use(baseUrl, routes);
+});
 
 // these are for debugging
 app.get('/', (req, res) => {

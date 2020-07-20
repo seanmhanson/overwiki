@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 // subject
-import HashedPassword from 'src/models/hashedPassword';
+import { HashedPassword } from 'models';
 
 // globals
 const securePassword = 'aSufficientlyLongPasswordShouldProveToBeSecure';

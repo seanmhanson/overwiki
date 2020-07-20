@@ -1,17 +1,8 @@
-import HashedPassword from 'src/models/hashedPassword';
-import UserDao from 'src/dao/userDao';
-import User from 'src/models/user';
+import { ServerError, HashedPassword, User, ErrorTypes } from 'models';
+import { UserDao } from 'dao';
+import { UserSvc } from 'svc';
 
-import { AuthError } from 'src/models/serverErrorTypes';
-import ServerError from 'src/models/serverError';
-
-// subject
-import UserSvc from 'src/svc/userSvc';
-
-// mock imported classes
-jest.mock('src/models/hashedPassword');
-jest.mock('src/dao/userDao');
-jest.mock('src/models/user');
+const { AuthError } = ErrorTypes;
 
 // set references for mocked classes
 const HashedPasswordMock = (HashedPassword as unknown) as jest.Mock<HashedPassword>;

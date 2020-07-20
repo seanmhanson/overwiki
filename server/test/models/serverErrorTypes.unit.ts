@@ -1,4 +1,6 @@
-import { AuthError, DaoError, MalformedRequestError } from 'src/models/serverErrorTypes';
+import { ErrorTypes } from 'models';
+
+const { AuthError, DaoError, MalformedRequestError } = ErrorTypes;
 
 const ERROR_TYPES = [AuthError, DaoError, MalformedRequestError];
 

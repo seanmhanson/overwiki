@@ -1,12 +1,9 @@
 import { ObjectId } from 'mongodb';
 
-// model and fixtures
-import User from 'src/models/user';
-import userDaoFixtures from 'test/fixtures/userDaoFixtures';
+import UserDaoFixtures from 'fixtures';
 
-// subject
-import UserDao from 'src/dao/userDao';
-import HashedPassword from 'src/models/hashedPassword';
+import { User, HashedPassword } from 'models';
+import { UserDao } from 'dao';
 
 describe('src/dao/userDao.ts', () => {
   let dao: UserDao;
@@ -21,7 +18,7 @@ describe('src/dao/userDao.ts', () => {
   });
 
   beforeEach(() => {
-    userDaoFixtures.forEach((user) => {
+    UserDaoFixtures.forEach((user) => {
       dao.create(user);
     });
   });
@@ -61,7 +58,7 @@ describe('src/dao/userDao.ts', () => {
 
   describe('when finding a user by username', () => {
     describe('and a user with the username exists', () => {
-      const expectedUser = userDaoFixtures[0];
+      const expectedUser = UserDaoFixtures[0];
       let returnedUser: User;
 
       beforeEach(async () => {

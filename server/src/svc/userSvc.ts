@@ -1,9 +1,10 @@
-import User from 'src/models/user';
-import UserDao from 'src/dao/userDao';
-import { InsertOneData, FindOneData, DeleteData } from 'src/dao/types';
-import HashedPassword from 'src/models/hashedPassword';
-import { AuthError } from 'src/models/serverErrorTypes';
-import ServerError from 'src/models/serverError';
+import { UserDao, DaoTypes } from 'dao';
+import { HashedPassword, ServerError, ErrorTypes, User } from 'models';
+
+type InsertOneData = DaoTypes.InsertOneData;
+type DeleteData = DaoTypes.DeleteData;
+type FindOneData = DaoTypes.FindOneData;
+const { AuthError } = ErrorTypes;
 
 interface CreateUserProps {
   username: string;

@@ -9,11 +9,11 @@ export type ErrorOptions = {
   [key: string]: any;
 } & ReservedOptions;
 
-export interface ErrorType {
+export type ErrorType = {
   message: string;
   formatMessage?: (options: ErrorOptions) => string;
   name?: ErrorNames;
-}
+};
 
 // error name values
 export enum ErrorNames {

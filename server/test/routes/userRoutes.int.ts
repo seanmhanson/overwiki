@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-import ServerError from 'src/models/serverError';
-import { MalformedRequestError, AuthError } from 'src/models/serverErrorTypes';
+import { ServerError, ErrorTypes } from 'models';
+import User from 'routes';
 
-import { userBaseUrl } from 'src/routes/userRoutes';
+const { MalformedRequestError, AuthError } = ErrorTypes;
+const { baseUrl: userBaseUrl } = User;
 
 // this should be managed by a config
 const baseURL = 'http://localhost:3000';
@@ -65,10 +66,10 @@ describe('src/routes/userRoutes', () => {
       const data = { username, password, confirmPassword: password };
 
       beforeEach(async () => {
-        const response = await registerUser(data);
+        // const response = await registerUser(data);
       });
 
-      // it('successfully creates the user', () => {});
+      // "successfully creates the user"
 
       describe('when creating a duplicate user', () => {
         it('returns a duplicate username error', async () => {
@@ -76,7 +77,7 @@ describe('src/routes/userRoutes', () => {
           await expectRegistrationError(data, error);
         });
 
-        // it('does not create a new user', () => {});
+        // "does not create a new user"
       });
     });
   });

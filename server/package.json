@@ -14,7 +14,7 @@
     "lint": "eslint . --ext .ts",
     "pretty-quick": "pretty-quick --staged",
     "prestart": "npm run build",
-    "start": "node .",
+    "start": "node ./dist/index.js",
     "pretest": "npm run build",
     "test": "jest"
   },
@@ -26,12 +26,19 @@
       "pre-commit": "npm run pretty-quick && npm run lint"
     }
   },
+  "_moduleAliases": {
+    "dao": "dist/dao",
+    "models": "dist/models",
+    "routes": "dist/routes",
+    "svc": "dist/svc"
+  },
   "dependencies": {
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "http-status": "^1.4.2",
+    "module-alias": "^2.2.2",
     "mongodb": "^3.5.7",
     "nodemon": "^2.0.3",
     "zxcvbn": "^4.4.2"
@@ -42,14 +49,17 @@
     "@types/express": "^4.17.6",
     "@types/http-status": "^1.1.2",
     "@types/jest": "^25.2.1",
+    "@types/jest-diff": "^24.3.0",
     "@types/mongodb": "^3.5.16",
     "@types/node": "^13.13.5",
+    "@types/pretty-format": "^24.3.0",
     "@types/zxcvbn": "^4.4.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-node": "^0.3.4",
     "eslint-import-resolver-typescript": "^2.0.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.10.0",

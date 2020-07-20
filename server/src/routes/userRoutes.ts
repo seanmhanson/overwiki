@@ -1,8 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import UserSvc from 'src/svc/userSvc';
-import ServerError from 'src/models/serverError';
-import { MalformedRequestError } from 'src/models/serverErrorTypes';
 
+import { UserSvc } from 'svc';
+import { ServerError, ErrorTypes } from 'models';
+
+const { MalformedRequestError } = ErrorTypes;
 const userSvc = new UserSvc();
 
 function hasRequiredFields(fields: { [key: string]: any }, fieldNames: Array<string>) {
@@ -37,5 +38,7 @@ async function registerUser(req: Request, resp: Response, next: NextFunction) {
 const userRoutes = Router();
 userRoutes.post('/', registerUser);
 
-export const userBaseUrl = '/user';
-export default userRoutes;
+export default {
+  routes: userRoutes,
+  baseUrl: '/user',
+};

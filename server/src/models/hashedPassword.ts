@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 import zxcvbn from 'zxcvbn';
 
-import { AuthError } from 'src/models/serverErrorTypes';
-import ServerError from 'src/models/serverError';
+import { AuthError } from './serverErrorTypes';
+import ServerError from './serverError';
 
 export default class HashedPassword {
   private static iterations = 100000;

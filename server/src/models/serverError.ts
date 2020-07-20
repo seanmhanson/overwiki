@@ -1,4 +1,4 @@
-import { ErrorNames, ErrorOptions, ErrorType } from 'src/models/serverErrorTypes';
+import { ErrorNames, ErrorOptions, ErrorType } from './serverErrorTypes';
 
 export default class ServerError extends Error {
   public statusCode: number;

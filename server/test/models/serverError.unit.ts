@@ -1,5 +1,6 @@
-import ServerError from 'src/models/serverError';
-import { ErrorNames } from 'src/models/serverErrorTypes';
+import { ServerError, ErrorTypes } from 'models';
+
+const { ErrorNames } = ErrorTypes;
 
 const message = 'farore';
 const formatMessage = ({ substring }) => `nayru${`: ${substring}`}`;

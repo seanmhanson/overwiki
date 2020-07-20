@@ -1,5 +1,4 @@
-import User from 'src/models/user';
-import HashedPassword from 'src/models/hashedPassword';
+import { User, HashedPassword } from 'models';
 
 export default [
   new User({

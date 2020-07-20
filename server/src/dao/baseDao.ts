@@ -1,7 +1,9 @@
 import { MongoClient, Db, Collection } from 'mongodb';
 
-import ServerError from 'src/models/serverError';
-import { DaoError, ErrorType } from 'src/models/serverErrorTypes';
+import { ServerError, ErrorTypes } from 'models';
+
+type ErrorType = ErrorTypes.ErrorType;
+const { DaoError } = ErrorTypes;
 
 interface DeleteOptions {
   query?: object;
@@ -61,7 +63,7 @@ abstract class BaseDao {
     console.debug('No database connection exists.');
   }
 
-  public deleteAll() {
+  protected deleteAll() {
     return this.delete({ deleteMany: true });
   }
 
